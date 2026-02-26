@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { useData } from '../../context/DataContext';
 
 const Users: React.FC = () => {
-  const { users, addUser, updateUser } = useData();
+  const { users, addUser, updateUser, deleteUser } = useData();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Asistente', password: '' });
 
   // Pagination State
@@ -39,21 +40,48 @@ const Users: React.FC = () => {
     return pages;
   };
 
-  const handleAddUser = () => {
-    const id = Math.random().toString(36).substr(2, 9);
-    addUser({
-      id,
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role as any,
-      status: 'Activo',
-      lastAccess: 'Nunca',
-      avatar: null,
-      initials: newUser.name.substring(0, 2).toUpperCase(),
-      password: newUser.password || 'password123'
-    });
-    setIsModalOpen(false);
+  const handleAddOrEditUser = () => {
+    if (editingUserId) {
+      updateUser(editingUserId, {
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role as any,
+        initials: newUser.name.substring(0, 2).toUpperCase(),
+        ...(newUser.password ? { password: newUser.password } : {}) // Only update password if provided
+      });
+    } else {
+      const id = Math.random().toString(36).substr(2, 9);
+      addUser({
+        id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role as any,
+        status: 'Activo',
+        lastAccess: 'Nunca',
+        avatar: null,
+        initials: newUser.name.substring(0, 2).toUpperCase(),
+        password: newUser.password || 'password123'
+      });
+    }
+    closeModal();
+  };
+
+  const openEditModal = (user: any) => {
+    setEditingUserId(user.id);
+    setNewUser({ name: user.name, email: user.email, role: user.role, password: '' }); // Don't load password to input
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setEditingUserId(null);
     setNewUser({ name: '', email: '', role: 'Asistente', password: '' });
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteUser = (id: string) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+      deleteUser(id);
+    }
   };
 
   return (
@@ -212,10 +240,10 @@ const Users: React.FC = () => {
                             </div>
                           )}
                           <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button className="p-1.5 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-md transition-colors" title="Editar">
+                            <button onClick={() => openEditModal(user)} className="p-1.5 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-md transition-colors" title="Editar">
                               <span className="material-icons text-lg">edit</span>
                             </button>
-                            <button className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors" title="Eliminar">
+                            <button onClick={() => handleDeleteUser(user.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors" title="Eliminar">
                               <span className="material-icons text-lg">delete</span>
                             </button>
                           </div>
@@ -286,8 +314,12 @@ const Users: React.FC = () => {
                   <span className="material-icons">person_add</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-display font-semibold leading-6 text-gray-900 dark:text-white">Agregar Nuevo Usuario</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Registro de un nuevo miembro del equipo.</p>
+                  <h3 className="text-xl font-display font-semibold leading-6 text-gray-900 dark:text-white">
+                    {editingUserId ? "Editar Usuario" : "Agregar Nuevo Usuario"}
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {editingUserId ? "Modifica los datos del usuario." : "Registro de un nuevo miembro del equipo."}
+                  </p>
                 </div>
               </div>
 
@@ -309,8 +341,10 @@ const Users: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="password">Contraseña</label>
-                  <input value={newUser.password} onChange={e => setNewUser({ ...newUser, password: e.target.value })} className="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark text-gray-900 dark:text-white pl-3 focus:border-primary focus:ring-primary sm:text-sm py-2 border outline-none" id="password" type="password" placeholder="Establecer contraseña" />
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="password">
+                    Contraseña {editingUserId && "(Dejar en blanco para mantener actual)"}
+                  </label>
+                  <input value={newUser.password} onChange={e => setNewUser({ ...newUser, password: e.target.value })} className="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark text-gray-900 dark:text-white pl-3 focus:border-primary focus:ring-primary sm:text-sm py-2 border outline-none" id="password" type="password" placeholder={editingUserId ? "Nueva contraseña (opcional)" : "Establecer contraseña"} />
                 </div>
               </div>
             </div>
@@ -319,14 +353,14 @@ const Users: React.FC = () => {
               <button
                 type="button"
                 className="inline-flex w-full justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-800 sm:w-auto transition-colors"
-                onClick={handleAddUser}
+                onClick={handleAddOrEditUser}
               >
-                Guardar Usuario
+                {editingUserId ? "Guardar Cambios" : "Guardar Usuario"}
               </button>
               <button
                 type="button"
                 className="inline-flex w-full justify-center rounded-full bg-white dark:bg-surface-dark px-5 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-white/5 sm:w-auto transition-colors"
-                onClick={() => setIsModalOpen(false)}
+                onClick={closeModal}
               >
                 Cancelar
               </button>

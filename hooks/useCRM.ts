@@ -7,7 +7,7 @@ import { usersDB } from '../services/database/users.db';
 import { wikiDB } from '../services/database/wiki.db';
 import { generateId } from '../utils/helpers';
 
-export const useCRM = (addToast: (type: 'success'|'error'|'info', msg: string) => void) => {
+export const useCRM = (addToast: (type: 'success' | 'error' | 'info', msg: string) => void) => {
   const [clients, setClients] = useState<Client[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [wikiArticles, setWikiArticles] = useState<WikiArticle[]>([]);
@@ -32,44 +32,51 @@ export const useCRM = (addToast: (type: 'success'|'error'|'info', msg: string) =
   }, []);
 
   const addClient = (data: Omit<Client, 'id'>) => {
-      const id = generateId('C');
-      const newClient = { ...data, id };
-      clientsDB.add(newClient).then(() => {
-          setClients(prev => [newClient, ...prev]);
-      });
-      return id;
+    const id = generateId('C');
+    const newClient = { ...data, id };
+    clientsDB.add(newClient).then(() => {
+      setClients(prev => [newClient, ...prev]);
+    });
+    return id;
   };
 
   const updateClient = (id: string, data: Partial<Client>) => {
-      const client = clients.find(c => c.id === id);
-      if (client) {
-          const updated = { ...client, ...data };
-          clientsDB.update(updated).then(() => {
-              setClients(prev => prev.map(c => c.id === id ? updated : c));
-          });
-      }
+    const client = clients.find(c => c.id === id);
+    if (client) {
+      const updated = { ...client, ...data };
+      clientsDB.update(updated).then(() => {
+        setClients(prev => prev.map(c => c.id === id ? updated : c));
+      });
+    }
   };
 
   const addUser = (user: User) => {
-      usersDB.add(user).then(() => {
-          setUsers(prev => [...prev, user]);
-          addToast('success', 'Usuario agregado');
-      });
+    usersDB.add(user).then(() => {
+      setUsers(prev => [...prev, user]);
+      addToast('success', 'Usuario agregado');
+    });
   };
 
   const updateUser = (id: string, data: Partial<User>) => {
-      const user = users.find(u => u.id === id);
-      if (user) {
-          const updated = { ...user, ...data };
-          usersDB.update(updated).then(() => {
-              setUsers(prev => prev.map(u => u.id === id ? updated : u));
-          });
-      }
+    const user = users.find(u => u.id === id);
+    if (user) {
+      const updated = { ...user, ...data };
+      usersDB.update(updated).then(() => {
+        setUsers(prev => prev.map(u => u.id === id ? updated : u));
+      });
+    }
+  };
+
+  const deleteUser = (id: string) => {
+    usersDB.delete(id).then(() => {
+      setUsers(prev => prev.filter(u => u.id !== id));
+      addToast('success', 'Usuario eliminado');
+    });
   };
 
   const addClientLog = (log: Omit<ClientLog, 'id' | 'timestamp'>) => {
-      const newLog = { ...log, id: generateId('LOG'), timestamp: Date.now() };
-      setClientLogs(prev => [newLog, ...prev]);
+    const newLog = { ...log, id: generateId('LOG'), timestamp: Date.now() };
+    setClientLogs(prev => [newLog, ...prev]);
   };
 
   return {
@@ -85,6 +92,7 @@ export const useCRM = (addToast: (type: 'success'|'error'|'info', msg: string) =
     updateClient,
     addUser,
     updateUser,
+    deleteUser,
     addClientLog
   };
 };

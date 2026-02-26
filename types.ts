@@ -315,6 +315,7 @@ export interface User {
   lastAccess: string;
   avatar: string | null;
   initials?: string;
+  password?: string;
   isAutoLoginEnabled?: boolean;
 }
 

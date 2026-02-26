@@ -13,20 +13,28 @@ const Login: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
+
     // Check for auto-login user
     const autoLoginUser = users.find(u => u.isAutoLoginEnabled);
     if (autoLoginUser) {
-        // Auto login success
-        navigate('/admin');
-        return;
-    }
-    
-    // Simple hardcoded validation as requested
-    if (email === 'admin@dermibelle.com' && password === '123456789') {
+      // Auto login success
       navigate('/admin');
+      return;
+    }
+
+    // Dynamic authentication against users in context
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    if (user) {
+      // If password field exists, validate it. If not (old users), use 'password123' as fallback
+      const validPassword = user.password || 'password123';
+      if (password === validPassword) {
+        navigate('/admin');
+      } else {
+        setError('Contraseña incorrecta. Por favor, inténtalo de nuevo.');
+      }
     } else {
-      setError('Credenciales incorrectas. Por favor, verifica tu correo y contraseña.');
+      setError('Usuario no encontrado. Por favor, verifica tu correo electrónico.');
     }
   };
 
@@ -51,7 +59,7 @@ const Login: React.FC = () => {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
         <div className="bg-surface-light dark:bg-surface-dark py-10 px-6 shadow-xl shadow-gray-200/50 dark:shadow-none sm:rounded-2xl sm:px-12 border border-gray-100 dark:border-gray-800 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
-          
+
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-300 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
@@ -99,7 +107,7 @@ const Login: React.FC = () => {
                   className="appearance-none block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent sm:text-sm bg-white dark:bg-background-dark/50 dark:text-white transition-all duration-200"
                   placeholder="••••••••"
                 />
-                <div 
+                <div
                   className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer group"
                   onClick={() => setShowPassword(!showPassword)}
                 >

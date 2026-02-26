@@ -48,6 +48,7 @@ const Users: React.FC = () => {
       role: newUser.role as any,
       status: 'Activo',
       lastAccess: 'Nunca',
+      avatar: null,
       initials: newUser.name.substring(0, 2).toUpperCase(),
       password: newUser.password || 'password123'
     });

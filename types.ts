@@ -1,18 +1,18 @@
 
 export interface OrderLine {
-    itemId: string | number;
-    title: string;
-    qty: number;
-    receivedQty?: number;
-    price: number;
-    confirmed?: boolean;
-    discountValue?: number;
-    discountType?: 'percent' | 'fixed';
-    stockAtOrder?: number;
-    unitAtOrder?: string;
-    unitAtReception?: string;
-    priceAtReception?: number;
-    receptionDate?: string;
+  itemId: string | number;
+  title: string;
+  qty: number;
+  receivedQty?: number;
+  price: number;
+  confirmed?: boolean;
+  discountValue?: number;
+  discountType?: 'percent' | 'fixed';
+  stockAtOrder?: number;
+  unitAtOrder?: string;
+  unitAtReception?: string;
+  priceAtReception?: number;
+  receptionDate?: string;
 }
 
 export interface Order {
@@ -34,7 +34,7 @@ export interface Order {
   notes?: string;
   inDispute?: boolean;
   isArchived?: boolean;
-  
+
   // Logistics Fields
   carrier?: string;
   trackingNumber?: string;
@@ -65,9 +65,9 @@ export interface PublicServiceItem {
 }
 
 export interface PublicServiceFeature {
-    icon: string;
-    title: string;
-    description: string;
+  icon: string;
+  title: string;
+  description: string;
 }
 
 export interface PublicServiceSection {
@@ -76,7 +76,7 @@ export interface PublicServiceSection {
   description: string;
   serviceIds: string[]; // Explicit list of services to show
   isActive?: boolean; // Visibility Status
-  
+
   // Config Fields
   layoutType: 'list' | 'grid_2' | 'card_row';
   showPrices: boolean;
@@ -84,7 +84,7 @@ export interface PublicServiceSection {
   features?: PublicServiceFeature[];
   protocol?: string[];
   promoBanner?: string;
-  
+
   // Styling Fields
   variant: 'clean' | 'soft_green' | 'warm_gold' | 'luxury_dark';
   imagePosition: 'left' | 'right' | 'top' | 'hidden';
@@ -95,15 +95,15 @@ export interface PublicProductSection {
   id: string;
   title: string;
   description: string;
-  productIds: string[]; 
+  productIds: string[];
   isActive?: boolean; // Visibility Status
-  
+
   layoutType: 'grid_3' | 'grid_4' | 'showcase'; // Slight variation for products
   showPrices: boolean;
   heroImage?: string;
   features?: PublicServiceFeature[];
   promoBanner?: string;
-  
+
   variant: 'clean' | 'soft_green' | 'warm_gold' | 'luxury_dark';
   imagePosition: 'left' | 'right' | 'top' | 'hidden';
 }
@@ -265,9 +265,9 @@ export interface Supplier {
   logo?: string;
   category?: string;
   shippingCosts?: {
-      standard: number;
-      express: number;
-      pickup: number;
+    standard: number;
+    express: number;
+    pickup: number;
   };
 }
 
@@ -293,7 +293,7 @@ export interface SupplierInvoice {
   discrepancyNotes?: string;
   history?: InvoiceHistoryEvent[];
   scheduledDate?: string;
-  
+
   // Enhanced Fields
   paymentMethod?: string;
   taxAmount?: number;
@@ -310,7 +310,9 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   role: 'Admin' | 'Asistente' | 'Recepcionista';
+
   status: 'Activo' | 'Ausente' | 'Inactivo';
   lastAccess: string;
   avatar: string | null;
@@ -356,8 +358,8 @@ export interface Toast {
 }
 
 export interface OrderTemplateItem {
-    itemId: string | number;
-    quantity: number;
+  itemId: string | number;
+  quantity: number;
 }
 
 export interface OrderTemplate {
@@ -368,9 +370,9 @@ export interface OrderTemplate {
 }
 
 export interface ServiceGroup {
-    id: string;
-    name: string;
-    color: string;
+  id: string;
+  name: string;
+  color: string;
 }
 
 export interface GlobalInventorySettings {

@@ -134,8 +134,10 @@ interface DataContextType {
     clientLogs: ClientLog[];
     addClientLog: (log: Omit<ClientLog, 'id' | 'timestamp'>) => void;
     currentUser: User | null;
+    authLoading: boolean;
     login: (user: User) => void;
     logout: () => void;
+
 
 
     // Catalog
@@ -233,6 +235,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // New State for Product Menu Sections (CMS)
     const [productSections, setProductSections] = useState<PublicProductSection[]>(INITIAL_PRODUCT_SECTIONS);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [authLoading, setAuthLoading] = useState(true);
 
     // Initial Auth Load
     useEffect(() => {
@@ -242,9 +245,12 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 setCurrentUser(JSON.parse(savedUser));
             } catch (e) {
                 console.error("Error parsing saved user", e);
+                localStorage.removeItem('dermibelle_auth_user');
             }
         }
+        setAuthLoading(false);
     }, []);
+
 
     const login = (user: User) => {
         setCurrentUser(user);
@@ -426,9 +432,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             addToast: system.addToast,
             removeToast: system.removeToast,
             currentUser,
+            authLoading,
             login,
             logout,
             performGlobalSearch
+
 
         }}>
             {children}

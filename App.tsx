@@ -1,7 +1,8 @@
 // Full project synchronization: 2026-02-27
 
 import React, { useEffect, useMemo } from 'react';
-import { HashRouter, Routes, Route, useLocation, Outlet, Link } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation, Outlet, Link, Navigate } from 'react-router-dom';
+
 import { PublicNavbar, Footer } from './components/PublicComponents';
 import AdminNavbar from './components/AdminNavbar';
 import Calculator from './components/Calculator';
@@ -110,6 +111,45 @@ const PublicLayout: React.FC = () => (
     <Footer />
   </>
 );
+
+// Protected Route Wrapper
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { currentUser, authLoading } = useData();
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-background-light dark:bg-background-dark">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+// Public Route Wrapper (Prevents logged-in users from seeing login page)
+const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { currentUser, authLoading } = useData();
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-background-light dark:bg-background-dark">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (currentUser) {
+    return <Navigate to="/admin" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 
 const AdminLayout: React.FC = () => {
   const { appointments, currentUser } = useData();
@@ -269,8 +309,9 @@ const App: React.FC = () => {
             </Route>
 
             <Route path="/booking" element={<Booking />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/register" element={<Register />} />
+
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
 
@@ -278,7 +319,7 @@ const App: React.FC = () => {
             <Route path="/portal/order/:id" element={<VendorOrderPortal />} />
             <Route path="/portal/dashboard/:id" element={<VendorDashboard />} />
 
-            <Route path="/admin" element={<AdminLayout />}>
+            <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
               <Route index element={<Dashboard />} />
               <Route path="appointments" element={<Appointments />} />
               <Route path="finance/invoices" element={<Invoices />} />
@@ -293,6 +334,7 @@ const App: React.FC = () => {
               <Route path="profile" element={<Profile />} />
               <Route path="notifications" element={<Notifications />} />
             </Route>
+
 
             <Route path="*" element={
               <div className="h-screen flex flex-col items-center justify-center bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">

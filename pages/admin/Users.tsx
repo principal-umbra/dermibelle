@@ -7,6 +7,8 @@ const Users: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [newUser, setNewUser] = useState({ name: '', email: '', role: 'Asistente', password: '' });
+  const [showModalPassword, setShowModalPassword] = useState(false);
+
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
@@ -68,15 +70,18 @@ const Users: React.FC = () => {
 
   const openEditModal = (user: any) => {
     setEditingUserId(user.id);
-    setNewUser({ name: user.name, email: user.email, role: user.role, password: '' }); // Don't load password to input
+    setNewUser({ name: user.name, email: user.email, role: user.role, password: user.password || '' });
     setIsModalOpen(true);
   };
+
 
   const closeModal = () => {
     setEditingUserId(null);
     setNewUser({ name: '', email: '', role: 'Asistente', password: '' });
+    setShowModalPassword(false);
     setIsModalOpen(false);
   };
+
 
   const handleDeleteUser = (id: string) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
@@ -342,10 +347,29 @@ const Users: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="password">
-                    Contraseña {editingUserId && "(Dejar en blanco para mantener actual)"}
+                    Contraseña
                   </label>
-                  <input value={newUser.password} onChange={e => setNewUser({ ...newUser, password: e.target.value })} className="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark text-gray-900 dark:text-white pl-3 focus:border-primary focus:ring-primary sm:text-sm py-2 border outline-none" id="password" type="password" placeholder={editingUserId ? "Nueva contraseña (opcional)" : "Establecer contraseña"} />
+                  <div className="relative">
+                    <input
+                      value={newUser.password}
+                      onChange={e => setNewUser({ ...newUser, password: e.target.value })}
+                      className="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark text-gray-900 dark:text-white pl-3 pr-10 focus:border-primary focus:ring-primary sm:text-sm py-2 border outline-none"
+                      id="password"
+                      type={showModalPassword ? "text" : "password"}
+                      placeholder="Establecer contraseña"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowModalPassword(!showModalPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-primary transition-colors"
+                    >
+                      <span className="material-icons text-lg">
+                        {showModalPassword ? 'visibility_off' : 'visibility'}
+                      </span>
+                    </button>
+                  </div>
                 </div>
+
               </div>
             </div>
 

@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
 
 const Login: React.FC = () => {
-  const { users } = useData();
+  const { users, login } = useData();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -26,10 +27,11 @@ const Login: React.FC = () => {
     const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
     if (user) {
-      // If password field exists, validate it. If not (old users), use 'password123' as fallback
       const validPassword = user.password || 'password123';
       if (password === validPassword) {
+        login(user);
         navigate('/admin');
+
       } else {
         setError('Contraseña incorrecta. Por favor, inténtalo de nuevo.');
       }
@@ -37,6 +39,7 @@ const Login: React.FC = () => {
       setError('Usuario no encontrado. Por favor, verifica tu correo electrónico.');
     }
   };
+
 
   return (
     <div className="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-body min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 login-hero-pattern transition-colors duration-300">

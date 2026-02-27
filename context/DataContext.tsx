@@ -133,6 +133,10 @@ interface DataContextType {
     wikiArticles: WikiArticle[];
     clientLogs: ClientLog[];
     addClientLog: (log: Omit<ClientLog, 'id' | 'timestamp'>) => void;
+    currentUser: User | null;
+    login: (user: User) => void;
+    logout: () => void;
+
 
     // Catalog
     catalog: AppointmentItem[];
@@ -228,6 +232,30 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     // New State for Product Menu Sections (CMS)
     const [productSections, setProductSections] = useState<PublicProductSection[]>(INITIAL_PRODUCT_SECTIONS);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+    // Initial Auth Load
+    useEffect(() => {
+        const savedUser = localStorage.getItem('dermibelle_auth_user');
+        if (savedUser) {
+            try {
+                setCurrentUser(JSON.parse(savedUser));
+            } catch (e) {
+                console.error("Error parsing saved user", e);
+            }
+        }
+    }, []);
+
+    const login = (user: User) => {
+        setCurrentUser(user);
+        localStorage.setItem('dermibelle_auth_user', JSON.stringify(user));
+    };
+
+    const logout = () => {
+        setCurrentUser(null);
+        localStorage.removeItem('dermibelle_auth_user');
+    };
+
 
     // New State for Fixed Expenses (Global)
     const [fixedExpenses, setFixedExpenses] = useState<FixedExpense[]>([
@@ -397,7 +425,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             toasts: system.toasts,
             addToast: system.addToast,
             removeToast: system.removeToast,
+            currentUser,
+            login,
+            logout,
             performGlobalSearch
+
         }}>
             {children}
         </DataContext.Provider>

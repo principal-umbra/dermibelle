@@ -112,7 +112,8 @@ const PublicLayout: React.FC = () => (
 );
 
 const AdminLayout: React.FC = () => {
-  const { appointments } = useData();
+  const { appointments, currentUser } = useData();
+
   const location = useLocation();
   const isFinancePage = location.pathname.includes('/finance');
   const isAppointmentsPage = location.pathname.includes('/admin/appointments');
@@ -213,13 +214,22 @@ const AdminLayout: React.FC = () => {
 
         <div className="p-4 border-t border-gray-800 bg-black/20 flex-shrink-0">
           <Link to="/admin/profile" className="flex items-center gap-3 group hover:bg-white/5 p-2 rounded-lg transition-colors">
-            <img alt="Admin User" className="w-10 h-10 rounded-full border-2 border-secondary object-cover group-hover:border-primary transition-colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTmbtnThyRcY-UuQYkb8xakqYr1Qeq6qEHsmBipiX7Jfzu8bQi29NVIWIXKzAXC3nACR8G1hVZqov325385Vb1oKji3TCl-FamPm-bZ0hBv7-cOeeA5oaZM5QVV2b6tONpZA_Ekn9VBZqAQUOI2KtkHZeuRQXHJfXPqFPKwLnqZyYSrcZaG-XIZzTeM8Ea_hnYPpD_Xb5Lu8HMn_t2PkUs1PNDd-NetN1qm8Sou6FIkuEYL5syn9cWf0YHLVib0hErULA6SfeMQrz8" />
+            {currentUser?.avatar ? (
+              <img alt="User avatar" className="w-10 h-10 rounded-full border-2 border-secondary object-cover group-hover:border-primary transition-colors" src={currentUser.avatar} />
+            ) : (
+              <div className="w-10 h-10 rounded-full border-2 border-secondary bg-primary/10 flex items-center justify-center text-primary font-bold text-sm group-hover:border-primary transition-colors">
+                {currentUser?.initials || currentUser?.name.substring(0, 2).toUpperCase() || 'AD'}
+              </div>
+            )}
             <div className="flex flex-col overflow-hidden">
-              <span className="text-sm font-bold text-white truncate group-hover:text-primary transition-colors">Ray Q.</span>
-              <span className="text-xs text-gray-400 truncate">Admin</span>
+              <span className="text-sm font-bold text-white truncate group-hover:text-primary transition-colors">
+                {currentUser?.name || 'Administrador'}
+              </span>
+              <span className="text-xs text-gray-400 truncate">{currentUser?.role || 'Admin'}</span>
             </div>
           </Link>
         </div>
+
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-gray-50/50">

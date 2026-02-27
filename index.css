@@ -1,0 +1,10 @@
+/* Main styles for Dermibelle Studio */
+:root {
+  --primary-color: #0f5132;
+  --secondary-color: #d4a373;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}

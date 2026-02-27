@@ -1,122 +1,153 @@
 <!DOCTYPE html>
+<!-- Full project synchronization: 2026-02-27 -->
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dermibelle Studio</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: "#0f5132",
-              secondary: "#d4a373",
-              "background-light": "#fdfbf7",
-              "background-dark": "#0a1f16",
-              "surface-light": "#ffffff",
-              "surface-dark": "#112920",
-              "text-light": "#2d3748",
-              "text-dark": "#e2e8f0",
-              "status-pending": "#f59e0b",
-              "status-confirmed": "#0f5132",
-              "status-cancelled": "#dc2626",
-            },
-            fontFamily: {
-              display: ['"Outfit"', 'sans-serif'],
-              body: ['"Inter"', 'sans-serif'],
-            },
-            borderRadius: {
-              DEFAULT: "0.5rem",
-              "xl": "1rem",
-              "2xl": "1.5rem",
-            },
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dermibelle Studio</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;700;800&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#0f5132",
+            secondary: "#d4a373",
+            "background-light": "#fdfbf7",
+            "background-dark": "#0a1f16",
+            "surface-light": "#ffffff",
+            "surface-dark": "#112920",
+            "text-light": "#2d3748",
+            "text-dark": "#e2e8f0",
+            "status-pending": "#f59e0b",
+            "status-confirmed": "#0f5132",
+            "status-cancelled": "#dc2626",
+          },
+          fontFamily: {
+            display: ['"Outfit"', 'sans-serif'],
+            body: ['"Inter"', 'sans-serif'],
+          },
+          borderRadius: {
+            DEFAULT: "0.5rem",
+            "xl": "1rem",
+            "2xl": "1.5rem",
           },
         },
-      };
-    </script>
-    <style>
-      html {
-        scroll-behavior: smooth;
-      }
-      /* Hide scrollbar for chrome/safari/opera */
-      .no-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-      /* Hide scrollbar for IE, Edge and Firefox */
-      .no-scrollbar {
-        -ms-overflow-style: none;  /* IE and Edge */
-        scrollbar-width: none;  /* Firefox */
-      }
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      .custom-scrollbar::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      .custom-scrollbar::-webkit-scrollbar-thumb {
-        background-color: rgba(156, 163, 175, 0.5);
-        border-radius: 20px;
-      }
-      .hero-pattern {
-        background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuD-ogLGXPorY7Uv7-qFWu-jns8BZzPbVPf1OfXp7b7XuWLnqJn5InlraEtb1IyCIlol79dk9OO1GxaMiPI_Rs__mM38fMvx0HDgmjGGTYRf-qfkVSPPAFt14G-oLgHDtD0BULF4sZcHpi9BtNp7-5OoAwfFRFP0d0jzCSsNp67cM0rtSiChv7o0sfXvOCQ_esb6u-w6S_6sfGIAQIUXbMF2ryUDxUsLKNq-QspTiRC9FU1LhZKtTZRyoUsZVJCVKJyEcqpJLyRsJpwc);
-      }
-      .login-hero-pattern {
-        background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCh-7dJVmU8vX9eIgvpr2h_F5RHLKjFtGkQvYMigsEJK8MARV0lpJ5bIGSY_oREJUDKAOMTURquK-9Z-ajqyVTXUnpO5UJa-q3y7Dzd4m_iPnQ-kV697SgLyLWDjxFhx7Ba8XVk46dDQi89CyWmCg1_s1xhkfopbveKKCp9FNh-wO0ajrveEBgMcLjf1hMtieCf91omSwtqsDekmg5vpujflvZ2nHsa4xq6KAqvxlGcRlYLz7XL5izjCAM6qSTW_grRc1FDq4u2Rm2j);
-      }
-      .text-shadow {
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-      }
-      .service-item-dots {
-        flex-grow: 1;
-        border-bottom: 1px dotted #cbd5e0;
-        margin: 0 1rem;
-        position: relative;
-        top: -5px;
-      }
-      .dark .service-item-dots {
-        border-bottom-color: #4a5568;
-      }
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translate3d(0, 20px, 0);
-        }
-        to {
-          opacity: 1;
-          transform: translate3d(0, 0, 0);
-        }
-      }
-      .animate-fade-in-up {
-        animation: fadeInUp 0.8s ease-out;
-      }
-      @keyframes slideInRight {
-        from { transform: translateX(100%); }
-        to { transform: translateX(0); }
-      }
-      .animate-slide-in-right {
-        animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-      /* Custom Details/Summary Styles */
-      details > summary {
-        list-style: none;
-      }
-      details > summary::-webkit-details-marker {
-        display: none;
-      }
-    </style>
+      },
+    };
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
 
-<link rel="stylesheet" href="/index.css">
+    /* Hide scrollbar for chrome/safari/opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      /* IE and Edge */
+      scrollbar-width: none;
+      /* Firefox */
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: rgba(156, 163, 175, 0.5);
+      border-radius: 20px;
+    }
+
+    .hero-pattern {
+      background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuD-ogLGXPorY7Uv7-qFWu-jns8BZzPbVPf1OfXp7b7XuWLnqJn5InlraEtb1IyCIlol79dk9OO1GxaMiPI_Rs__mM38fMvx0HDgmjGGTYRf-qfkVSPPAFt14G-oLgHDtD0BULF4sZcHpi9BtNp7-5OoAwfFRFP0d0jzCSsNp67cM0rtSiChv7o0sfXvOCQ_esb6u-w6S_6sfGIAQIUXbMF2ryUDxUsLKNq-QspTiRC9FU1LhZKtTZRyoUsZVJCVKJyEcqpJLyRsJpwc);
+    }
+
+    .login-hero-pattern {
+      background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCh-7dJVmU8vX9eIgvpr2h_F5RHLKjFtGkQvYMigsEJK8MARV0lpJ5bIGSY_oREJUDKAOMTURquK-9Z-ajqyVTXUnpO5UJa-q3y7Dzd4m_iPnQ-kV697SgLyLWDjxFhx7Ba8XVk46dDQi89CyWmCg1_s1xhkfopbveKKCp9FNh-wO0ajrveEBgMcLjf1hMtieCf91omSwtqsDekmg5vpujflvZ2nHsa4xq6KAqvxlGcRlYLz7XL5izjCAM6qSTW_grRc1FDq4u2Rm2j);
+    }
+
+    .text-shadow {
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .service-item-dots {
+      flex-grow: 1;
+      border-bottom: 1px dotted #cbd5e0;
+      margin: 0 1rem;
+      position: relative;
+      top: -5px;
+    }
+
+    .dark .service-item-dots {
+      border-bottom-color: #4a5568;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    .animate-fade-in-up {
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+      }
+
+      to {
+        transform: translateX(0);
+      }
+    }
+
+    .animate-slide-in-right {
+      animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Custom Details/Summary Styles */
+    details>summary {
+      list-style: none;
+    }
+
+    details>summary::-webkit-details-marker {
+      display: none;
+    }
+  </style>
+
+  <link rel="stylesheet" href="/index.css">
 </head>
-  <body>
-    <div id="root"></div>
+
+<body>
+  <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>
+
 </html>

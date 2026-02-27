@@ -63,20 +63,10 @@ export const useCRM = (addToast: (type: 'success' | 'error' | 'info', msg: strin
       const updated = { ...user, ...data };
       usersDB.update(updated).then(() => {
         setUsers(prev => prev.map(u => u.id === id ? updated : u));
-
-        // Sync with session if it's the current user
-        const savedUser = localStorage.getItem('dermibelle_auth_user');
-        if (savedUser) {
-          const authUser = JSON.parse(savedUser);
-          if (authUser.id === id) {
-            localStorage.setItem('dermibelle_auth_user', JSON.stringify(updated));
-            // We can't call setCurrentUser here because we are in useCRM, 
-            // but DataContext will trigger a re-render if we expose a way or if we move this logic.
-          }
-        }
       });
     }
   };
+
 
 
   const deleteUser = (id: string) => {

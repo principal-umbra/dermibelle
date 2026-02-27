@@ -15,16 +15,9 @@ const Login: React.FC = () => {
     e.preventDefault();
     setError('');
 
-    // Check for auto-login user
-    const autoLoginUser = users.find(u => u.isAutoLoginEnabled);
-    if (autoLoginUser) {
-      // Auto login success
-      navigate('/admin');
-      return;
-    }
-
     // Dynamic authentication against users in context
     const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
 
     if (user) {
       const validPassword = user.password || 'password123';

@@ -342,7 +342,17 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (finance.invoices.length > 0) checkExpirations();
     }, [finance.invoices.length, finance.setInvoices, catalogData.setCatalog, system.addToast]);
 
+    const updateUser = (id: string, data: Partial<User>) => {
+        crm.updateUser(id, data);
+        if (currentUser && currentUser.id === id) {
+            const updated = { ...currentUser, ...data };
+            setCurrentUser(updated);
+            localStorage.setItem('dermibelle_auth_user', JSON.stringify(updated));
+        }
+    };
+
     return (
+
         <DataContext.Provider value={{
             // CRM
             clients: safeClients,
@@ -350,8 +360,9 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             updateClient: crm.updateClient,
             users: crm.users,
             addUser: crm.addUser,
-            updateUser: crm.updateUser,
+            updateUser,
             deleteUser: crm.deleteUser,
+
             wikiArticles: crm.wikiArticles,
             clientLogs: crm.clientLogs,
             addClientLog: crm.addClientLog,

@@ -1,12 +1,11 @@
-
 import { User } from '../../types';
+import { supabase } from '../supabase';
 
 const DB_NAME = 'Dermibelle_Users';
 const DB_VERSION = 7; // Incremented for non-destructive seeding
 const STORE_NAME = 'users';
 
 const SEED_USERS: User[] = [
-  // ... (keeping same seed users but with Comandoz1 password)
   {
     id: '1',
     name: 'Ray Q.',
@@ -38,17 +37,6 @@ const SEED_USERS: User[] = [
     lastAccess: 'Ayer, 18:45 PM',
     avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC3uzUrmW0WBJPpGKXPIZB8lQpBCU-NR87amocmNg3XuclXUOEPXk1l5aO0zITr56r9SINtzQ4NWrmQF2yTrPvTFOBlEd-_VfXzwXYUeKdYLWMlr8i4Ar-aecTV26Do2zyUAaMm7QuQMwRjlRWI-1LRcSITPjcuQz47C5VuftInza7UIsrNpdwk1XIBKHfE7ev1gs9nP1si2Zl6o5R1DDbV9apEDsgU-p2GyT--4SrMpIzfZbbYXucJe4w4581J_IopL0JMSvhfQX6w',
     password: 'Comandoz1'
-  },
-  {
-    id: '4',
-    name: 'Marco Polo',
-    email: 'marco@dermibelle.com',
-    role: 'Asistente',
-    status: 'Inactivo',
-    lastAccess: '20 Feb, 2025',
-    avatar: null,
-    initials: 'MP',
-    password: 'Comandoz1'
   }
 ];
 
@@ -58,29 +46,12 @@ class UsersDatabase {
   private async open(): Promise<IDBDatabase> {
     if (this.db) return this.db;
     return new Promise((resolve, reject) => {
-      console.log(`Opening Users Database version ${DB_VERSION}...`);
       const request = indexedDB.open(DB_NAME, DB_VERSION);
       request.onupgradeneeded = (event) => {
-        console.log('Upgrading Users Database...');
         const db = (event.target as IDBOpenDBRequest).result;
-        let store: IDBObjectStore;
-
         if (!db.objectStoreNames.contains(STORE_NAME)) {
-          store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-        } else {
-          store = (event.target as IDBOpenDBRequest).transaction!.objectStore(STORE_NAME);
+          db.createObjectStore(STORE_NAME, { keyPath: 'id' });
         }
-
-        // Non-destructive seeding: only add if not present
-        SEED_USERS.forEach(u => {
-          const checkReq = store.get(u.id);
-          checkReq.onsuccess = () => {
-            if (!checkReq.result) {
-              store.add(u);
-              console.log(`Seeded missing user: ${u.email}`);
-            }
-          };
-        });
       };
       request.onsuccess = (event) => {
         this.db = (event.target as IDBOpenDBRequest).result;
@@ -91,58 +62,77 @@ class UsersDatabase {
   }
 
   async getAll(): Promise<User[]> {
+    // 1. Try to get from Supabase first
+    try {
+      const { data, error } = await supabase.from('users').select('*');
+      if (!error && data) {
+        // Sync local cache
+        const db = await this.open();
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        data.forEach(u => store.put(u));
+        return data as User[];
+      }
+    } catch (e) {
+      console.warn("Could not sync with Supabase, using local data", e);
+    }
+
+    // 2. Fallback to local IndexedDB
     const db = await this.open();
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const tx = db.transaction(STORE_NAME, 'readonly');
       const store = tx.objectStore(STORE_NAME);
       const request = store.getAll();
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const users = request.result;
+        if (users.length === 0) {
+          resolve(SEED_USERS);
+        } else {
+          resolve(users);
+        }
+      };
     });
   }
 
   async add(user: User): Promise<void> {
     const db = await this.open();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-      const request = store.add(user);
-      request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.objectStore(STORE_NAME).add(user);
+
+    // Sync to Cloud
+    supabase.from('users').insert(user).then(({ error }) => {
+      if (error) console.error("Error adding user to Supabase:", error);
     });
   }
 
   async update(user: Partial<User> & { id: string }): Promise<void> {
     const db = await this.open();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-      // First get the existing user to merge
-      const getReq = store.get(user.id);
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
 
-      getReq.onsuccess = () => {
-        const existingUser = getReq.result;
-        if (existingUser) {
-          const updatedUser = { ...existingUser, ...user };
-          const putReq = store.put(updatedUser);
-          putReq.onsuccess = () => resolve();
-          putReq.onerror = () => reject(putReq.error);
-        } else {
-          reject(new Error(`User with id ${user.id} not found`));
-        }
-      };
-      getReq.onerror = () => reject(getReq.error);
-    });
+    const getReq = store.get(user.id);
+    getReq.onsuccess = () => {
+      const existing = getReq.result;
+      if (existing) {
+        const updated = { ...existing, ...user };
+        store.put(updated);
+
+        // Sync to Cloud
+        supabase.from('users').update(user).eq('id', user.id).then(({ error }) => {
+          if (error) console.error("Error updating user in Supabase:", error);
+        });
+      }
+    };
   }
 
   async delete(id: string): Promise<void> {
     const db = await this.open();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, 'readwrite');
-      const store = tx.objectStore(STORE_NAME);
-      const request = store.delete(id);
-      request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.objectStore(STORE_NAME).delete(id);
+
+    // Sync to Cloud
+    supabase.from('users').delete().eq('id', id).then(({ error }) => {
+      if (error) console.error("Error deleting user from Supabase:", error);
     });
   }
 }

@@ -2,7 +2,7 @@
 import { User } from '../../types';
 
 const DB_NAME = 'Dermibelle_Users';
-const DB_VERSION = 4; // Incremented for password support
+const DB_VERSION = 5; // Incremented to force re-seed and ensure password support
 const STORE_NAME = 'users';
 
 const SEED_USERS: User[] = [
@@ -57,8 +57,10 @@ class UsersDatabase {
   private async open(): Promise<IDBDatabase> {
     if (this.db) return this.db;
     return new Promise((resolve, reject) => {
+      console.log(`Opening Users Database version ${DB_VERSION}...`);
       const request = indexedDB.open(DB_NAME, DB_VERSION);
       request.onupgradeneeded = (event) => {
+        console.log('Upgrading Users Database and seeding data...');
         const db = (event.target as IDBOpenDBRequest).result;
         let store: IDBObjectStore;
 
@@ -66,12 +68,14 @@ class UsersDatabase {
           store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
         } else {
           store = (event.target as IDBOpenDBRequest).transaction!.objectStore(STORE_NAME);
-          // Clear existing data to ensure seed data is fresh
           store.clear();
         }
 
         // Populate with seed data
-        SEED_USERS.forEach(u => store.add(u));
+        SEED_USERS.forEach(u => {
+          store.add(u);
+          console.log(`Seeded user: ${u.email}`);
+        });
       };
       request.onsuccess = (event) => {
         this.db = (event.target as IDBOpenDBRequest).result;

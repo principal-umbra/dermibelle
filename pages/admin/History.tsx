@@ -125,11 +125,11 @@ const History: React.FC = () => {
 
             {/* Header & Nav - Floating Dock Style */}
             <div className="px-6 pt-6 pb-2 flex-shrink-0 z-20 relative">
-                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 max-w-[1920px] mx-auto">
+                <div className="flex flex-wrap xl:items-center justify-between gap-4 md:gap-6 max-w-[1920px] mx-auto w-full">
 
                     {/* Title Area */}
-                    <div className="shrink-0 flex items-center gap-3 md:gap-4 pl-1 md:pl-2">
-                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gray-900 text-white dark:bg-white dark:text-black flex items-center justify-center shadow-xl shadow-gray-900/20 dark:shadow-white/10">
+                    <div className="shrink-0 flex items-center gap-3 md:gap-4 pl-1 md:pl-2 w-full xl:w-auto">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gray-900 text-white dark:bg-white dark:text-black flex items-center justify-center shadow-xl shadow-gray-900/20 dark:shadow-white/10 shrink-0">
                             <span className="material-icons text-xl md:text-2xl">hub</span>
                         </div>
                         <div>
@@ -139,7 +139,7 @@ const History: React.FC = () => {
                     </div>
 
                     {/* Navigation Dock - Responsive Padding & Wrap */}
-                    <div className="flex items-center gap-3 md:gap-4 overflow-x-auto no-scrollbar pb-2 md:pb-4 xl:pb-0 xl:justify-end flex-1 pl-1 md:pl-2 flex-wrap xl:flex-nowrap">
+                    <div className="flex items-center gap-3 md:gap-4 overflow-x-auto no-scrollbar pb-2 md:pb-4 xl:pb-0 xl:justify-end flex-wrap flex-1 pl-1 md:pl-2 w-full xl:w-auto">
 
                         {/* Tabs Container */}
                         <div className="flex items-center p-1 md:p-1.5 bg-white dark:bg-surface-dark/90 backdrop-blur-xl rounded-full border border-gray-200/60 dark:border-gray-700/60 shadow-lg md:shadow-xl shadow-gray-200/40 dark:shadow-black/40 ring-1 ring-white/50 dark:ring-white/5">

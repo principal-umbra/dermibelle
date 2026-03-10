@@ -94,7 +94,7 @@ const ClientHeader: React.FC<ClientHeaderProps> = ({
         <div className="bg-white dark:bg-surface-dark rounded-[1.5rem] shadow-sm shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 relative z-30">
             {/* Increased z-index to 30 to sit above content below. 
                 Changed stats container to overflow-visible on XL to prevent tooltip clipping. */}
-            <div className="flex flex-col xl:flex-row h-auto xl:h-24">
+            <div className="flex flex-col xl:flex-row h-auto min-h-[6rem]">
 
                 {/* LEFT: Profile Identity Only (Expanded Name) - Lower z-index sibling */}
                 <div className="p-6 flex items-center gap-5 border-b xl:border-b-0 xl:border-r border-gray-100 dark:border-gray-700/50 relative bg-gray-50/30 dark:bg-white/5 shrink-0 z-10">
@@ -146,8 +146,8 @@ const ClientHeader: React.FC<ClientHeaderProps> = ({
 
                 {/* RIGHT: Stats Strip (Distributed Evenly) - Faster layout for smaller screens
                     CRITICAL FIX: Changed from overflow-x-auto to a more flexible flex-wrap container on smaller desktops/tablets. */}
-                <div className="flex-1 bg-white dark:bg-surface-dark w-full z-0 relative">
-                    <div className="flex flex-wrap items-center h-full w-full divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-700/50 justify-center sm:justify-start">
+                <div className="flex-1 bg-white dark:bg-surface-dark w-full z-0 relative rounded-b-[1.5rem] xl:rounded-bl-none xl:rounded-r-[1.5rem] overflow-hidden">
+                    <div className="flex flex-wrap items-center h-full w-full justify-center sm:justify-start">
                         {renderStats()}
                     </div>
                 </div>

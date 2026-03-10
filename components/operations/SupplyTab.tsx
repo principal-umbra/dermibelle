@@ -215,11 +215,11 @@ const SupplyTab: React.FC = () => {
             )}
 
             {/* 1. Header & Navigation Area */}
-            <div className="shrink-0 mb-4 pt-2">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="shrink-0 mb-4 pt-2 w-full">
+                <div className="flex flex-wrap lg:items-center justify-between gap-4 w-full">
 
-                    <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
-                        <div>
+                    <div className="flex flex-wrap md:items-center gap-4 md:gap-6 w-full lg:w-auto">
+                        <div className="w-full sm:w-auto">
                             <h2 className="text-xl font-display font-bold text-gray-900 dark:text-white">Cadena de Suministro</h2>
                             <p className="text-xs text-gray-500 dark:text-gray-400">Control inteligente de stock y compras.</p>
                         </div>
@@ -255,10 +255,10 @@ const SupplyTab: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3 self-end lg:self-auto">
+                    <div className="flex items-center gap-3 w-full lg:w-auto justify-start lg:justify-end flex-wrap mt-2 lg:mt-0">
                         <button
                             onClick={() => setIsPortalSelectOpen(true)}
-                            className="px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition-all flex items-center gap-2 border bg-gray-900 dark:bg-white text-white dark:text-black border-transparent hover:opacity-90"
+                            className="px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition-all flex items-center gap-2 border bg-gray-900 dark:bg-white text-white dark:text-black border-transparent hover:opacity-90 whitespace-nowrap"
                         >
                             <span className="material-icons text-sm">login</span>
                             Portal Proveedor

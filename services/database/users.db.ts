@@ -2,7 +2,7 @@
 import { User } from '../../types';
 
 const DB_NAME = 'Dermibelle_Users';
-const DB_VERSION = 5; // Incremented to force re-seed and ensure password support
+const DB_VERSION = 6; // Incremented to update passwords to Comandoz1
 const STORE_NAME = 'users';
 
 const SEED_USERS: User[] = [
@@ -14,7 +14,7 @@ const SEED_USERS: User[] = [
     status: 'Activo',
     lastAccess: 'Hace 5 minutos',
     avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBTmbtnThyRcY-UuQYkb8xakqYr1Qeq6qEHsmBipiX7Jfzu8bQi29NVIWIXKzAXC3nACR8G1hVZqov325385Vb1oKji3TCl-FamPm-bZ0hBv7-cOeeA5oaZM5QVV2b6tONpZA_Ekn9VBZqAQUOI2KtkHZeuRQXHJfXPqFPKwLnqZyYSrcZaG-XIZzTeM8Ea_hnYPpD_Xb5Lu8HMn_t2PkUs1PNDd-NetN1qm8Sou6FIkuEYL5syn9cWf0YHLVib0hErULA6SfeMQrz8',
-    password: 'admin',
+    password: 'Comandoz1',
     isAutoLoginEnabled: true
   },
   {
@@ -26,7 +26,7 @@ const SEED_USERS: User[] = [
     lastAccess: 'Hoy, 09:30 AM',
     avatar: null,
     initials: 'JL',
-    password: 'password123'
+    password: 'Comandoz1'
   },
   {
     id: '3',
@@ -36,7 +36,7 @@ const SEED_USERS: User[] = [
     status: 'Ausente',
     lastAccess: 'Ayer, 18:45 PM',
     avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC3uzUrmW0WBJPpGKXPIZB8lQpBCU-NR87amocmNg3XuclXUOEPXk1l5aO0zITr56r9SINtzQ4NWrmQF2yTrPvTFOBlEd-_VfXzwXYUeKdYLWMlr8i4Ar-aecTV26Do2zyUAaMm7QuQMwRjlRWI-1LRcSITPjcuQz47C5VuftInza7UIsrNpdwk1XIBKHfE7ev1gs9nP1si2Zl6o5R1DDbV9apEDsgU-p2GyT--4SrMpIzfZbbYXucJe4w4581J_IopL0JMSvhfQX6w',
-    password: 'password123'
+    password: 'Comandoz1'
   },
   {
     id: '4',
@@ -47,7 +47,7 @@ const SEED_USERS: User[] = [
     lastAccess: '20 Feb, 2025',
     avatar: null,
     initials: 'MP',
-    password: 'password123'
+    password: 'Comandoz1'
   }
 ];
 

@@ -2,10 +2,11 @@
 import { User } from '../../types';
 
 const DB_NAME = 'Dermibelle_Users';
-const DB_VERSION = 6; // Incremented to update passwords to Comandoz1
+const DB_VERSION = 7; // Incremented for non-destructive seeding
 const STORE_NAME = 'users';
 
 const SEED_USERS: User[] = [
+  // ... (keeping same seed users but with Comandoz1 password)
   {
     id: '1',
     name: 'Ray Q.',
@@ -60,7 +61,7 @@ class UsersDatabase {
       console.log(`Opening Users Database version ${DB_VERSION}...`);
       const request = indexedDB.open(DB_NAME, DB_VERSION);
       request.onupgradeneeded = (event) => {
-        console.log('Upgrading Users Database and seeding data...');
+        console.log('Upgrading Users Database...');
         const db = (event.target as IDBOpenDBRequest).result;
         let store: IDBObjectStore;
 
@@ -68,13 +69,17 @@ class UsersDatabase {
           store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
         } else {
           store = (event.target as IDBOpenDBRequest).transaction!.objectStore(STORE_NAME);
-          store.clear();
         }
 
-        // Populate with seed data
+        // Non-destructive seeding: only add if not present
         SEED_USERS.forEach(u => {
-          store.add(u);
-          console.log(`Seeded user: ${u.email}`);
+          const checkReq = store.get(u.id);
+          checkReq.onsuccess = () => {
+            if (!checkReq.result) {
+              store.add(u);
+              console.log(`Seeded missing user: ${u.email}`);
+            }
+          };
         });
       };
       request.onsuccess = (event) => {

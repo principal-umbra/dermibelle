@@ -113,7 +113,7 @@ const PublicLayout: React.FC = () => (
 );
 
 // Protected Route Wrapper
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProtectedRoute: React.FC<{ children: React.ReactNode, allowedRoles?: string[] }> = ({ children, allowedRoles }) => {
   const { currentUser, authLoading } = useData();
 
   if (authLoading) {
@@ -126,6 +126,10 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   if (!currentUser) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(currentUser.role)) {
+    return <Navigate to="/admin" replace />;
   }
 
   return <>{children}</>;
@@ -207,17 +211,22 @@ const AdminLayout: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-6 pb-2 px-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Finanzas</div>
-          <div className="space-y-1">
-            <Link className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group ${location.pathname.includes('invoices') ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`} to="/admin/finance/invoices">
-              <span className="material-icons text-sm group-hover:text-secondary">receipt_long</span>
-              <span className="font-medium">Facturas</span>
-            </Link>
-            <Link className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group ${location.pathname.includes('history') ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`} to="/admin/finance/history">
-              <span className="material-icons text-sm group-hover:text-secondary">history</span>
-              <span className="font-medium">Operaciones</span>
-            </Link>
-          </div>
+          {/* Finance Section - Only for Admin */}
+          {currentUser?.role === 'Admin' && (
+            <>
+              <div className="pt-6 pb-2 px-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Finanzas</div>
+              <div className="space-y-1">
+                <Link className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group ${location.pathname.includes('invoices') ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`} to="/admin/finance/invoices">
+                  <span className="material-icons text-sm group-hover:text-secondary">receipt_long</span>
+                  <span className="font-medium">Facturas</span>
+                </Link>
+                <Link className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group ${location.pathname.includes('history') ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`} to="/admin/finance/history">
+                  <span className="material-icons text-sm group-hover:text-secondary">history</span>
+                  <span className="font-medium">Operaciones</span>
+                </Link>
+              </div>
+            </>
+          )}
 
           <div className="pt-6 pb-2 px-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Gestión CRM</div>
           <div className="space-y-1">
@@ -240,11 +249,13 @@ const AdminLayout: React.FC = () => {
 
           <div className="pt-6 pb-2 px-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Sistema</div>
           <div className="space-y-1">
-            <Link className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isUsersPage ? 'bg-primary text-white shadow-lg shadow-primary/20 relative' : 'text-gray-400 hover:text-white hover:bg-white/5'}`} to="/admin/users">
-              {isUsersPage && <div className="absolute left-0 top-0 bottom-0 w-1 bg-secondary rounded-l-xl"></div>}
-              <span className={`material-icons transition-colors ${isUsersPage ? '' : 'group-hover:text-secondary'}`}>admin_panel_settings</span>
-              <span className="font-medium">Configuración</span>
-            </Link>
+            {currentUser?.role === 'Admin' && (
+              <Link className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isUsersPage ? 'bg-primary text-white shadow-lg shadow-primary/20 relative' : 'text-gray-400 hover:text-white hover:bg-white/5'}`} to="/admin/users">
+                {isUsersPage && <div className="absolute left-0 top-0 bottom-0 w-1 bg-secondary rounded-l-xl"></div>}
+                <span className={`material-icons transition-colors ${isUsersPage ? '' : 'group-hover:text-secondary'}`}>admin_panel_settings</span>
+                <span className="font-medium">Configuración</span>
+              </Link>
+            )}
             <Link className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200 group" to="/">
               <span className="material-icons group-hover:text-secondary transition-colors">public</span>
               <span className="font-medium">Ver Sitio Web</span>
@@ -330,7 +341,7 @@ const App: React.FC = () => {
               <Route path="crm/suppliers" element={<Suppliers />} />
               <Route path="crm/suppliers/:id" element={<SupplierDetails />} />
               <Route path="crm/catalog" element={<Catalog />} />
-              <Route path="users" element={<Users />} />
+              <Route path="users" element={<ProtectedRoute allowedRoles={['Admin']}><Users /></ProtectedRoute>} />
               <Route path="profile" element={<Profile />} />
               <Route path="notifications" element={<Notifications />} />
             </Route>

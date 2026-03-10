@@ -173,22 +173,22 @@ const AdminLayout: React.FC = () => {
     [appointments]);
 
   return (
-    <div className="bg-background-light font-body text-text-light antialiased h-screen w-full overflow-hidden flex">
-      <aside className="w-64 bg-surface-dark text-white flex flex-col shadow-2xl z-20 flex-shrink-0 transition-all duration-300 hidden md:flex border-r border-gray-800 overflow-y-auto">
-        <div className="h-20 flex items-center px-6 border-b border-gray-800 bg-surface-dark flex-shrink-0">
+    <div className="bg-background-light font-body text-text-light antialiased min-h-screen md:h-screen w-full overflow-x-hidden md:overflow-hidden flex flex-col md:flex-row">
+      <aside className="w-full md:w-20 lg:w-64 bg-surface-dark text-white flex flex-col shadow-2xl z-20 flex-shrink-0 transition-all duration-300 border-b md:border-b-0 md:border-r border-gray-800 overflow-y-auto">
+        <div className="h-16 md:h-20 flex items-center px-4 lg:px-6 border-b border-gray-800 bg-surface-dark flex-shrink-0">
           <Link className="flex items-center gap-2 group w-full" to="/admin">
-            <span className="material-icons text-primary text-3xl group-hover:scale-110 transition-transform">spa</span>
-            <div className="flex flex-col">
-              <span className="font-display font-bold text-xl tracking-wide text-white">Dermibelle</span>
-              <span className="text-xs uppercase tracking-[0.2em] text-secondary">Admin Panel</span>
+            <span className="material-icons text-primary text-2xl lg:text-3xl group-hover:scale-110 transition-transform">spa</span>
+            <div className="flex flex-col lg:flex flex-row md:hidden lg:flex flex-col">
+              <span className="font-display font-bold text-lg lg:text-xl tracking-wide text-white">Dermibelle</span>
+              <span className="text-[10px] lg:text-xs uppercase tracking-[0.1em] lg:tracking-[0.2em] text-secondary">Admin Panel</span>
             </div>
           </Link>
         </div>
 
-        <nav className="flex-1 py-6 px-3 space-y-1">
-          <Link className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${location.pathname === '/admin' ? 'bg-primary/20 text-white border-l-4 border-secondary shadow-lg shadow-black/20' : 'text-gray-400 hover:text-white hover:bg-white/5'}`} to="/admin">
+        <nav className="flex-1 py-4 md:py-6 px-2 lg:px-3 space-y-1">
+          <Link className={`flex items-center gap-3 px-3 lg:px-4 py-3 rounded-xl transition-all duration-200 group ${location.pathname === '/admin' ? 'bg-primary/20 text-white border-l-4 border-secondary shadow-lg shadow-black/20' : 'text-gray-400 hover:text-white hover:bg-white/5'}`} to="/admin">
             <span className={`material-icons transition-colors ${location.pathname === '/admin' ? 'text-secondary' : 'group-hover:text-secondary'}`}>dashboard</span>
-            <span className={`font-medium tracking-wide ${location.pathname === '/admin' ? '' : ''}`}>Dashboard</span>
+            <span className={`font-medium tracking-wide md:hidden lg:block ${location.pathname === '/admin' ? '' : ''}`}>Dashboard</span>
           </Link>
 
           <div className="mt-2 space-y-1">
@@ -203,7 +203,7 @@ const AdminLayout: React.FC = () => {
               )}
             </Link>
 
-            <div className="ml-9 border-l border-gray-700/50 pl-2">
+            <div className="ml-9 border-l border-gray-700/50 pl-2 md:hidden lg:block">
               <Link className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-sm group ${isArchivePage ? 'text-white font-medium bg-white/10' : 'text-gray-500 hover:text-gray-300'}`} to="/admin/archive">
                 <span className="material-icons text-xs group-hover:text-secondary transition-colors">folder_open</span>
                 <span>Archivo</span>
@@ -256,23 +256,23 @@ const AdminLayout: React.FC = () => {
                 <span className="font-medium">Configuración</span>
               </Link>
             )}
-            <Link className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200 group" to="/">
+            <Link className="flex items-center gap-3 px-3 lg:px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200 group" to="/">
               <span className="material-icons group-hover:text-secondary transition-colors">public</span>
-              <span className="font-medium">Ver Sitio Web</span>
+              <span className="font-medium md:hidden lg:block">Ver Sitio Web</span>
             </Link>
           </div>
         </nav>
 
-        <div className="p-4 border-t border-gray-800 bg-black/20 flex-shrink-0">
+        <div className="p-3 lg:p-4 border-t border-gray-800 bg-black/20 flex-shrink-0">
           <Link to="/admin/profile" className="flex items-center gap-3 group hover:bg-white/5 p-2 rounded-lg transition-colors">
             {currentUser?.avatar ? (
-              <img alt="User avatar" className="w-10 h-10 rounded-full border-2 border-secondary object-cover group-hover:border-primary transition-colors" src={currentUser.avatar} />
+              <img alt="User avatar" className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border-2 border-secondary object-cover group-hover:border-primary transition-colors" src={currentUser.avatar} />
             ) : (
-              <div className="w-10 h-10 rounded-full border-2 border-secondary bg-primary/10 flex items-center justify-center text-primary font-bold text-sm group-hover:border-primary transition-colors">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border-2 border-secondary bg-primary/10 flex items-center justify-center text-primary font-bold text-xs lg:text-sm group-hover:border-primary transition-colors">
                 {currentUser?.initials || currentUser?.name.substring(0, 2).toUpperCase() || 'AD'}
               </div>
             )}
-            <div className="flex flex-col overflow-hidden">
+            <div className="flex flex-col overflow-hidden md:hidden lg:flex">
               <span className="text-sm font-bold text-white truncate group-hover:text-primary transition-colors">
                 {currentUser?.name || 'Administrador'}
               </span>

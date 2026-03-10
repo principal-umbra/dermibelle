@@ -90,9 +90,9 @@ const Users: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-background-light dark:bg-background-dark relative">
-      {/* Custom Header */}
-      <header className="h-20 bg-white dark:bg-surface-dark border-b border-gray-200 dark:border-gray-800 flex items-center justify-end px-8 flex-shrink-0 z-10">
+    <div className="flex flex-col h-full bg-background-light dark:bg-background-dark relative overflow-hidden">
+      {/* Custom Header - Responsive Height */}
+      <header className="h-16 md:h-20 bg-white dark:bg-surface-dark border-b border-gray-200 dark:border-gray-800 flex items-center justify-end px-4 md:px-8 flex-shrink-0 z-10 transition-all">
         <div className="flex items-center gap-6">
           <button className="relative p-2 text-gray-400 hover:text-primary transition-colors">
             <span className="material-icons">notifications</span>
@@ -107,12 +107,12 @@ const Users: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto p-8">
+      <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
 
         {/* Page Title */}
-        <div className="flex flex-col mb-8">
-          <h1 className="font-display text-3xl font-bold text-gray-900 dark:text-white mb-2">Configuración del Sistema</h1>
-          <p className="text-gray-500 dark:text-gray-400 mb-6">Administra los accesos y usuarios del estudio.</p>
+        <div className="flex flex-col mb-6 md:mb-8">
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-1 md:mb-2">Configuración del Sistema</h1>
+          <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mb-4 md:mb-6">Administra los accesos y usuarios del estudio.</p>
         </div>
 
         <div className="animate-in fade-in slide-in-from-left-4 duration-300">
@@ -128,14 +128,14 @@ const Users: React.FC = () => {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 flex items-center justify-center">
-                <span className="material-icons">group</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+            <div className="bg-white dark:bg-surface-dark p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center gap-4">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 flex items-center justify-center">
+                <span className="material-icons text-xl md:text-2xl">group</span>
               </div>
               <div>
-                <span className="block text-2xl font-bold text-gray-900 dark:text-white">{users.length}</span>
-                <span className="text-sm text-gray-500 dark:text-gray-400">Usuarios Totales</span>
+                <span className="block text-xl md:text-2xl font-bold text-gray-900 dark:text-white">{users.length}</span>
+                <span className="text-xs md:text-sm text-gray-500 dark:text-gray-400">Usuarios Totales</span>
               </div>
             </div>
             <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center gap-4">

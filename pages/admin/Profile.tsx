@@ -64,26 +64,26 @@ const Profile: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full bg-background-light dark:bg-background-dark relative">
-      {/* Header */}
-      <header className="h-20 flex items-center justify-between px-8 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-surface-dark/50 backdrop-blur-sm z-10 flex-shrink-0">
-        <h1 className="font-display text-2xl font-bold text-gray-900 dark:text-white">Mi Perfil</h1>
-        <div className="flex items-center gap-4">
+      {/* Header - Responsive Height */}
+      <header className="h-16 md:h-20 flex items-center justify-between px-4 md:px-8 border-b border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-surface-dark/50 backdrop-blur-sm z-10 flex-shrink-0">
+        <h1 className="font-display text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Mi Perfil</h1>
+        <div className="flex items-center gap-2 md:gap-4">
           <button className="p-2 text-gray-400 hover:text-primary transition-colors relative">
             <span className="material-icons">notifications</span>
             <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-background-dark"></span>
           </button>
-          <div className="text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
+          <div className="text-xs text-gray-500 dark:text-gray-400 hidden lg:block">
             Último acceso: {currentUser.lastAccess}
           </div>
         </div>
       </header>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-gray-50 dark:bg-background-dark/50">
-        <div className="max-w-3xl mx-auto space-y-6">
+      <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-50 dark:bg-background-dark/50">
+        <div className="max-w-3xl mx-auto space-y-4 md:space-y-6">
 
           {/* Header Card */}
-          <div className="bg-white dark:bg-surface-dark rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          <div className="bg-white dark:bg-surface-dark rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 text-center md:text-left">
             <div className="relative group">
               {currentUser.avatar ? (
                 <img
@@ -112,12 +112,12 @@ const Profile: React.FC = () => {
           </div>
 
           {/* Form Card */}
-          <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
-            <div className="px-8 py-6 border-b border-gray-100 dark:border-gray-800">
+          <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+            <div className="px-6 md:px-8 py-4 md:py-6 border-b border-gray-100 dark:border-gray-800">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">Información Personal</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Actualiza tu información básica y de contacto.</p>
+              <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">Actualiza tu información básica y de contacto.</p>
             </div>
-            <form id="profile-form" className="p-8 space-y-6" onSubmit={handleSubmit}>
+            <form id="profile-form" className="p-6 md:p-8 space-y-4 md:space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="col-span-1 md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="name">Nombre Completo</label>

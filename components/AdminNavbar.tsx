@@ -128,17 +128,17 @@ const AdminNavbar: React.FC = () => {
     };
 
     return (
-        <header className="h-20 bg-white shadow-sm flex items-center justify-between px-8 sticky top-0 z-40">
+        <header className="h-16 md:h-20 bg-white shadow-sm flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
 
             {/* 1. Global Search */}
-            <div className="flex-1 max-w-xl relative" ref={searchRef}>
+            <div className="flex-1 max-w-[200px] sm:max-w-xs md:max-w-xl relative" ref={searchRef}>
                 <div className="relative group">
                     <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <span className="material-icons text-gray-400 group-focus-within:text-primary transition-colors">search</span>
+                        <span className="material-icons text-gray-400 group-focus-within:text-primary transition-colors text-sm md:text-base">search</span>
                     </span>
                     <input
-                        className="block w-full pl-10 pr-3 py-2.5 border-none rounded-xl bg-gray-100 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all duration-300 sm:text-sm"
-                        placeholder="Buscar cliente, cita, pedido o factura..."
+                        className="block w-full pl-9 md:pl-10 pr-3 py-1.5 md:py-2.5 border-none rounded-xl bg-gray-100 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all duration-300 text-xs md:text-sm"
+                        placeholder="Buscar..."
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -356,15 +356,15 @@ const AdminNavbar: React.FC = () => {
                 <div className="relative" ref={calendarRef}>
                     <button
                         onClick={() => setIsCalendarOpen(!isCalendarOpen)}
-                        className={`flex items-center gap-3 group rounded-lg p-1 pr-3 transition-colors ${isCalendarOpen ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
+                        className={`flex items-center gap-2 md:gap-3 group rounded-lg p-1 md:pr-3 transition-colors ${isCalendarOpen ? 'bg-gray-50' : 'hover:bg-gray-50'}`}
                     >
-                        <div className="flex flex-col items-end text-right text-gray-700">
-                            <span className="block text-xs text-gray-400 font-medium uppercase tracking-wider">Perfil</span>
-                            <span className="text-sm font-bold whitespace-nowrap">
+                        <div className="hidden sm:flex flex-col items-end text-right text-gray-700">
+                            <span className="block text-[10px] text-gray-400 font-medium uppercase tracking-wider">Perfil</span>
+                            <span className="text-xs md:text-sm font-bold whitespace-nowrap">
                                 {currentUser?.name || 'Administrador'}
                             </span>
                         </div>
-                        <div className={`w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs ring-2 ring-white`}>
+                        <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs ring-2 ring-white`}>
                             {currentUser?.avatar ? (
                                 <img src={currentUser.avatar} alt="" className="w-full h-full rounded-full object-cover" />
                             ) : (

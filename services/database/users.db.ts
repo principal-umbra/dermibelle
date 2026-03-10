@@ -65,36 +65,64 @@ class UsersDatabase {
     let cloudUsers: User[] = [];
     let fetchError = false;
 
-    // 3. Sync local data to cloud (Migration)
-    const db = await this.open();
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
+    // 1. Try to get from Supabase
+    try {
+      const { data, error } = await supabase.from('users').select('*');
+      if (!error && data) {
+        cloudUsers = data as User[];
+      } else {
+        fetchError = true;
+      }
+    } catch (e) {
+      fetchError = true;
+    }
 
-    // Check for local-only users to push to Supabase
-    const localReq = store.getAll();
-    localReq.onsuccess = () => {
-      const localUsers = localReq.result || [];
-      localUsers.forEach(lu => {
-        if (!cloudUsers.find(cu => cu.id === lu.id)) {
-          console.log("Migrating local user to cloud:", lu.email);
-          supabase.from('users').upsert(lu).then(({ error }) => {
-            if (error) console.error("Error migrating user:", error);
+    // 2. Access local DB
+    const db = await this.open();
+    return new Promise((resolve) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      const localReq = store.getAll();
+
+      localReq.onsuccess = () => {
+        const localUsers = localReq.result || [];
+
+        // Auto-migration: push local-only users to cloud
+        localUsers.forEach(lu => {
+          const isAtCloud = cloudUsers.some(cu => cu.id === lu.id);
+          const isSeed = SEED_USERS.some(su => su.email === lu.email);
+          if (!isAtCloud && !isSeed) {
+            supabase.from('users').upsert(lu);
+          }
+        });
+
+        // Sync cloud users to local cache
+        if (!fetchError) {
+          cloudUsers.forEach(u => store.put(u));
+        }
+
+        // 3. Merging logic
+        const finalUsers = [...cloudUsers];
+
+        // If fetch failed, use local data
+        if (fetchError) {
+          localUsers.forEach(lu => {
+            if (!finalUsers.some(fu => fu.id === lu.id)) {
+              finalUsers.push(lu);
+            }
           });
         }
-      });
-      // Update local store with cloud users (latest source of truth)
-      cloudUsers.forEach(u => store.put(u));
-    };
 
-    // 4. Always merge SEED_USERS with cloud data to ensure admins are present
-    const finalUsers = [...cloudUsers];
-    SEED_USERS.forEach(seed => {
-      if (!finalUsers.find(u => u.email === seed.email)) {
-        finalUsers.push(seed);
-      }
+        // Always ensure SEED_USERS are included
+        SEED_USERS.forEach(seed => {
+          if (!finalUsers.some(u => u.email === seed.email)) {
+            finalUsers.push(seed);
+          }
+        });
+
+        resolve(finalUsers);
+      };
     });
-
-    return finalUsers;
   }
 
   async add(user: User): Promise<void> {

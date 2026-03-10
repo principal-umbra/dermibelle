@@ -62,36 +62,39 @@ class UsersDatabase {
   }
 
   async getAll(): Promise<User[]> {
-    // 1. Try to get from Supabase first
-    try {
-      const { data, error } = await supabase.from('users').select('*');
-      if (!error && data) {
-        // Sync local cache
-        const db = await this.open();
-        const tx = db.transaction(STORE_NAME, 'readwrite');
-        const store = tx.objectStore(STORE_NAME);
-        data.forEach(u => store.put(u));
-        return data as User[];
-      }
-    } catch (e) {
-      console.warn("Could not sync with Supabase, using local data", e);
-    }
+    let cloudUsers: User[] = [];
+    let fetchError = false;
 
-    // 2. Fallback to local IndexedDB
+    // 3. Sync local data to cloud (Migration)
     const db = await this.open();
-    return new Promise((resolve) => {
-      const tx = db.transaction(STORE_NAME, 'readonly');
-      const store = tx.objectStore(STORE_NAME);
-      const request = store.getAll();
-      request.onsuccess = () => {
-        const users = request.result;
-        if (users.length === 0) {
-          resolve(SEED_USERS);
-        } else {
-          resolve(users);
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+
+    // Check for local-only users to push to Supabase
+    const localReq = store.getAll();
+    localReq.onsuccess = () => {
+      const localUsers = localReq.result || [];
+      localUsers.forEach(lu => {
+        if (!cloudUsers.find(cu => cu.id === lu.id)) {
+          console.log("Migrating local user to cloud:", lu.email);
+          supabase.from('users').upsert(lu).then(({ error }) => {
+            if (error) console.error("Error migrating user:", error);
+          });
         }
-      };
+      });
+      // Update local store with cloud users (latest source of truth)
+      cloudUsers.forEach(u => store.put(u));
+    };
+
+    // 4. Always merge SEED_USERS with cloud data to ensure admins are present
+    const finalUsers = [...cloudUsers];
+    SEED_USERS.forEach(seed => {
+      if (!finalUsers.find(u => u.email === seed.email)) {
+        finalUsers.push(seed);
+      }
     });
+
+    return finalUsers;
   }
 
   async add(user: User): Promise<void> {
